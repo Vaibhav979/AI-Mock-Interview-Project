@@ -29,7 +29,7 @@ public class GeminiService {
                         Map.of("parts", new Object[] {
                                 Map.of("text", prompt)
                         })
-                });
+                }); // request body creation
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
