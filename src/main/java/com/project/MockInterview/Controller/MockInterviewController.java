@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.project.MockInterview.Service.GeminiService;
 import com.project.MockInterview.Service.HumeService;
@@ -23,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("http://localhost:5173/")
 public class MockInterviewController {
 
     @Autowired
@@ -35,10 +37,13 @@ public class MockInterviewController {
     @PostMapping("/generate-questions")
     public ResponseEntity<Map<String, List<String>>> generateQuestion(@RequestBody QuestionRequest req) {
         String prompt = String.format(
-                "Act as a technical interviewer. Generate 3 entry-level mock interview questions for a candidate applying for the role of '%s' with skills: %s. Be crisp.",
+                "Act as a technical interviewer. Generate 3 concise mock interview questions for the role of '%s' with skills: %s. "
+                        +
+                        "Respond ONLY with a raw JSON array like this: [\"Q1\", \"Q2\", \"Q3\"]. No explanation, no markdown, no extra text.",
                 req.role, req.skills);
 
         String geminiResponse = geminiService.callGemini(prompt);
+        System.out.println("🧠 Gemini Response:\n" + geminiResponse);
         List<String> extractedQuestions = extractQuestions(geminiResponse);
 
         Map<String, List<String>> response = new HashMap<>();
@@ -71,13 +76,18 @@ public class MockInterviewController {
     @PostMapping(value = "/speak", produces = "audio/mpeg")
     public ResponseEntity<byte[]> speak(@RequestBody Map<String, String> request) {
         String text = request.get("text");
-        byte[] audioBytes = humeService.callHumeTTS(text);
+        String cleanedText = sanitizeTextForTTS(text);
+        byte[] audioBytes = humeService.callHumeTTS(cleanedText);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("audio/mpeg"));
         headers.setContentDispositionFormData("inline", "speech.mp3");
 
         return new ResponseEntity<>(audioBytes, headers, HttpStatus.OK);
 
+    }
+
+    private String sanitizeTextForTTS(String input) {
+        return input.replaceAll("[`*~_]", "").replaceAll("\"", "");
     }
 
     public List<String> extractBulletPoints(String text, String sectionTitle) {
@@ -96,14 +106,16 @@ public class MockInterviewController {
     }
 
     private List<String> extractQuestions(String response) {
-        List<String> questions = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\d+\\.\\s+\\*\\*\\\"(.*?)\\\"\\*\\*");
-        Matcher matcher = pattern.matcher(response);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            // Remove Markdown block formatting if present (```)
+            response = response.replaceAll("```json", "").replaceAll("```", "").trim();
 
-        while (matcher.find()) {
-            questions.add(matcher.group(1));
+            return mapper.readValue(response, new TypeReference<List<String>>() {
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of("Failed to extract questions from response.");
         }
-
-        return questions;
     }
 }

@@ -30,8 +30,8 @@ public class HumeService {
                                                 Map.of(
                                                                 "text", text,
                                                                 "description",
-                                                                "Professional interviewer voice, confident and encouraging tone")),
-                                "format", Map.of("type", "mp3"));
+                                                                "Professional female interviewer voice, confident and encouraging tone")),
+                                "format", Map.of("type", "mp3")); // request body as mentioned in hume docs
 
                 HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
                 ResponseEntity<byte[]> response = restTemplate.postForEntity(HUME_TTS_URL, entity, byte[].class);
