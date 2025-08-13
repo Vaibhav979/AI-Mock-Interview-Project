@@ -1,0 +1,55 @@
+import React, { createContext, useContext, useState } from "react";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
+import axios from "axios";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null); // { name, email, picture }
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLoginSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwt_decode(credentialResponse.credential);
+      const userInfo = {
+        name: decoded.name,
+        email: decoded.email,
+        picture: decoded.picture,
+      };
+
+      setUser(userInfo);
+      setIsAuthenticated(true);
+
+      // Save user to backend (Spring Boot)
+      await axios.post("http://localhost:8080/api/auth/save-user", {
+        email: userInfo.email,
+        name: userInfo.name,
+        picture: userInfo.picture,
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  const handleLogin = () => {
+    // no-op: login is triggered from <GoogleLogin />
+  };
+
+  return (
+    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID_HERE">
+      <AuthContext.Provider
+        value={{ user, isAuthenticated, handleLogin, handleLogout, handleLoginSuccess }}
+      >
+        {children}
+      </AuthContext.Provider>
+    </GoogleOAuthProvider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
