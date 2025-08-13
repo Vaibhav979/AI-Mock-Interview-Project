@@ -34,3 +34,6 @@ build/
 
 # Ignore application.properties or any sensitive config
 src/main/resources/application.properties
+
+
+node_modules/
