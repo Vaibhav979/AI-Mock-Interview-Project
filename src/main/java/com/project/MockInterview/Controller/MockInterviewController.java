@@ -43,7 +43,6 @@ public class MockInterviewController {
                 req.role, req.skills);
 
         String geminiResponse = geminiService.callGemini(prompt);
-        System.out.println("🧠 Gemini Response:\n" + geminiResponse);
         List<String> extractedQuestions = extractQuestions(geminiResponse);
 
         Map<String, List<String>> response = new HashMap<>();

@@ -1,21 +1,48 @@
 import React from "react";
 import "./index.css";
 import Navbar from "./components/Navbar";
-import HeroSection from "./components/HeroSection";
-import HowItWorks from "./components/HowItWorks";
-import Features from "./components/Features";
-import Footer from "./components/Footer";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Home from "./components/Home";
+import StartMockInterview from "./components/StartMockInterview";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/current-user", {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const user = await res.json();
+          setUser(user); // Set this in global context or state
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        console.error(err);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
-      <Navbar />
-      <div className="max-w-7xl mx-auto pt-10 px-6">
-        <HeroSection />
-        <HowItWorks />
-        <Features />
-        <Footer />
-      </div>
+      <Navbar user={user} setUser={setUser} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/start-mock-interview" element={<StartMockInterview />} />
+      </Routes>
     </>
   );
 }
