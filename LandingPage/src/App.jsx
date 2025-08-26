@@ -5,6 +5,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Home from "./components/Home";
 import StartMockInterview from "./components/StartMockInterview";
+import ProtectedRoute from "./components/ProtectedRoute";
+// import RequireAuth from "./components/RequireAuth";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,8 +43,23 @@ function App() {
     <>
       <Navbar user={user} setUser={setUser} />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/start-mock-interview" element={<StartMockInterview />} />
+        <Route path="/" element={<Home user={user} />} />
+        <Route
+          path="/start-mock-interview"
+          element={
+            <ProtectedRoute user={user}>
+              <StartMockInterview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute user={user}>
+              <Dashboard user={user} />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

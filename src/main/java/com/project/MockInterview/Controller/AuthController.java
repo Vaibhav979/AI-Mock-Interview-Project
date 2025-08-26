@@ -99,6 +99,12 @@ public class AuthController {
         return ResponseEntity.ok("Logged out successfully.");
     }
 
+    // @PostMapping("/save-user")
+    // public ResponseEntity<?> saveUser(@RequestBody User user) {
+    // User savedUser = userRepository.save(user);
+    // return ResponseEntity.ok(savedUser);
+    // }
+
     @SuppressWarnings("deprecation")
     private GoogleIdToken verifyToken(String idTokenString) { // token verification with Google’s servers
         try {

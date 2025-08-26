@@ -34,7 +34,7 @@ const StartMockInterview = () => {
   return (
     <div>
       {/* modified navbar */}
-      <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b border-neutral-700/80">
+      {/* <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b border-neutral-700/80">
         <div className="container px-4 mx-auto relative text-sm">
           <div className="flex items-center justify-between px-6">
             <Link to="/">
@@ -45,7 +45,7 @@ const StartMockInterview = () => {
             </Link>
           </div>
         </div>
-      </nav>
+      </nav> */}
       {/* navbar ends */}
 
       <div className="max-w-3xl mx-auto mt-10 p-6 rounded-2xl shadow-md">

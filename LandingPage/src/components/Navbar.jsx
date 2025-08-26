@@ -6,6 +6,8 @@ import logo from "../assets/logo.png";
 import { navItems } from "../constants";
 import { useAuth } from "../context/AuthContext";
 import { GoogleLogin } from "@react-oauth/google";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = ({ user, setUser }) => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -25,6 +27,7 @@ const Navbar = ({ user, setUser }) => {
       if (!res.ok) throw new Error("Failed to authenticate");
       const data = await res.json();
       setUser(data); // This will update App.jsx user state
+      toast.success("Logged In successfully!");
     } catch (error) {
       console.error("Login error", error);
     }
@@ -59,11 +62,18 @@ const Navbar = ({ user, setUser }) => {
             </div>
           </Link>
           <ul className="hidden lg:flex ml-14 space-x-12 ">
-            {navItems.map((item, index) => (
-              <li className="hover:text-orange-500" key={index}>
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
+          {navItems.map((item, index) => (
+            <li className="hover:text-orange-500" key={index}>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+          {user && (
+            <li>
+              <Link to="/dashboard" className="hover:text-gray-400">
+                Dashboard
+              </Link>
+            </li>
+          )}
           </ul>
 
           {!user ? (
@@ -142,6 +152,7 @@ const Navbar = ({ user, setUser }) => {
           )}
         </div>
       )}
+      <ToastContainer position="top-center" autoClose={1000} />
     </nav>
   );
 };
