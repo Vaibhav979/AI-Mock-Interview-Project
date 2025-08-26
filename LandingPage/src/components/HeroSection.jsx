@@ -1,9 +1,20 @@
 import React from "react";
 import video_1 from "../assets/video_1.mp4";
 import video_2 from "../assets/video_2.mp4";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const HeroSection = () => {
+const HeroSection = ({ user }) => {
+  const navigate = useNavigate();
+
+  const handleStartClick = () => {
+    if (!user) {
+      toast.error("You must be logged in to start the mock interview.");
+    } else {
+      navigate("/start-mock-interview");
+    }
+  };
   return (
     <div className="flex flex-col items-center mt-1 lg-mt-20">
       <h1 className="text-3xl sm:text-5xl lg:text-6xl text-center tracking-wide">
@@ -19,12 +30,12 @@ const HeroSection = () => {
         feedback.
       </p>
       <div className="flex justify-center my-10">
-        <Link
-          to="/start-mock-interview"
-          className="bg-gradient-to-r from-orange-500 to-orange-800 py-3 px-4 mx-3 rounded-md "
+        <button
+          onClick={handleStartClick}
+          className="bg-gradient-to-r from-orange-500 to-orange-800 py-3 px-4 mx-3 rounded-md text-white cursor-pointer hover:from-orange-800 hover:to-orange-800 transition duration-300"
         >
           Start Mock Interview
-        </Link>
+        </button>
         <a href="#howitworks" className="py-3 px-4 mx-3 rounded-md border">
           How It Works
         </a>
@@ -51,6 +62,7 @@ const HeroSection = () => {
           Your browser does not support the video tag.
         </video>
       </div>
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 };

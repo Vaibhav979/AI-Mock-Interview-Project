@@ -4,10 +4,10 @@ import HowItWorks from "./HowItWorks";
 import Features from "./Features";
 import Footer from "./Footer";
 
-const Home = () => {
+const Home = ({user}) => {
   return (
     <div className="max-w-7xl mx-auto pt-10 px-6">
-      <HeroSection />
+      <HeroSection user={user}/>
       <HowItWorks />
       <Features />
       <Footer />
