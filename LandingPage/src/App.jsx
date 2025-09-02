@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Home from "./components/Home";
 import StartMockInterview from "./components/StartMockInterview";
 import ProtectedRoute from "./components/ProtectedRoute";
-// import RequireAuth from "./components/RequireAuth";
+import InterviewSession from "./components/InterviewSession";
 import Dashboard from "./components/Dashboard";
 
 function App() {
@@ -60,6 +60,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/interview" element={<InterviewSession />} />
       </Routes>
     </>
   );

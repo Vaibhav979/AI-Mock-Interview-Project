@@ -6,8 +6,14 @@ import App from "./App.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { BrowserRouter } from "react-router-dom";
 
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+if (!googleClientId) {
+  console.error("Google Client ID is not set. Please check your environment variables.");
+}
+
 createRoot(document.getElementById("root")).render(
-  <GoogleOAuthProvider clientId="458730253344-pn65hhjbiemskmpphq7k6bta6o81rrgf.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId={googleClientId}>
     <BrowserRouter>
       <StrictMode>
         <App />
