@@ -35,8 +35,14 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  if (!googleClientId) {
+    console.error("Google Client ID is not set. Please check your environment variables.");
+  }
+
   return (
-    <GoogleOAuthProvider clientId="458730253344-pn65hhjbiemskmpphq7k6bta6o81rrgf.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={googleClientId}>
       <AuthContext.Provider
         value={{ user, isAuthenticated, handleLogout, handleLoginSuccess }}
       >

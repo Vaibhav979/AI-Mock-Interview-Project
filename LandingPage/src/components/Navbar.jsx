@@ -30,6 +30,7 @@ const Navbar = ({ user, setUser }) => {
       toast.success("Logged In successfully!");
     } catch (error) {
       console.error("Login error", error);
+      toast.error("Login failed. Please try again.");
     }
   };
 
@@ -62,18 +63,18 @@ const Navbar = ({ user, setUser }) => {
             </div>
           </Link>
           <ul className="hidden lg:flex ml-14 space-x-12 ">
-          {navItems.map((item, index) => (
-            <li className="hover:text-orange-500" key={index}>
-              <a href={item.href}>{item.label}</a>
-            </li>
-          ))}
-          {user && (
-            <li>
-              <Link to="/dashboard" className="hover:text-gray-400">
-                Dashboard
-              </Link>
-            </li>
-          )}
+            {navItems.map((item, index) => (
+              <li className="hover:text-orange-500" key={index}>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))}
+            {user && (
+              <li>
+                <Link to="/dashboard" className="hover:text-gray-400">
+                  Dashboard
+                </Link>
+              </li>
+            )}
           </ul>
 
           {!user ? (

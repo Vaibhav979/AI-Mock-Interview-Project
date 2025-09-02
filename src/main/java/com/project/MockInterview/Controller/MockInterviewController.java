@@ -37,7 +37,7 @@ public class MockInterviewController {
     @PostMapping("/generate-questions")
     public ResponseEntity<Map<String, List<String>>> generateQuestion(@RequestBody QuestionRequest req) {
         String prompt = String.format(
-                "Act as a technical interviewer. Generate 3 concise mock interview questions for the role of '%s' with skills: %s. "
+                "Act as a technical interviewer. Generate 5 concise mock interview questions for the role of '%s' with skills: %s. "
                         +
                         "Respond ONLY with a raw JSON array like this: [\"Q1\", \"Q2\", \"Q3\"]. No explanation, no markdown, no extra text.",
                 req.role, req.skills);

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class AuthController {
+
+    @Value("${GOOGLE_CLIENT_ID}")
+    private String googleClientId;
 
     @Autowired
     UserRepository userRepository;
@@ -106,14 +110,23 @@ public class AuthController {
     // }
 
     @SuppressWarnings("deprecation")
-    private GoogleIdToken verifyToken(String idTokenString) { // token verification with Google’s servers
+    private GoogleIdToken verifyToken(String idTokenString) { // token verification with Google's servers
         try {
+            // Get Google Client ID from environment variable or system property
+            // String googleClientId = System.getenv("GOOGLE_CLIENT_ID");
+            // if (googleClientId == null || googleClientId.isEmpty()) {
+            //     googleClientId = System.getProperty("GOOGLE_CLIENT_ID");
+            // }
+
+            // if (googleClientId == null || googleClientId.isEmpty()) {
+            //     throw new RuntimeException(
+            //             "Google Client ID is not configured. Please set GOOGLE_CLIENT_ID environment variable.");
+            // }
+
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(),
                     new JacksonFactory())
-                    .setAudience(Collections
-                            .singletonList("458730253344-pn65hhjbiemskmpphq7k6bta6o81rrgf.apps.googleusercontent.com")) // from
-                                                                                                                        // frontend
+                    .setAudience(Collections.singletonList(googleClientId))
                     .build();
 
             return verifier.verify(idTokenString);

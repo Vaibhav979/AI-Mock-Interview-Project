@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
+import { Link, useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const StartMockInterview = () => {
   const [role, setRole] = useState("");
   const [skills, setSkills] = useState("");
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleGenerate = async (e) => {
     e.preventDefault();
@@ -21,8 +22,9 @@ const StartMockInterview = () => {
           skills,
         }
       );
-
-      setQuestions(response.data.questions || []); // Adjust depending on backend response format
+      const generatedQuestions = response.data.questions || [];
+      navigate("/interview", { state: { questions: generatedQuestions } });
+      // setQuestions(response.data.questions || []); // Adjust depending on backend response format
     } catch (error) {
       console.error("Error generating questions:", error);
       alert("Failed to generate questions. Try again.");
@@ -33,21 +35,6 @@ const StartMockInterview = () => {
 
   return (
     <div>
-      {/* modified navbar */}
-      {/* <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b border-neutral-700/80">
-        <div className="container px-4 mx-auto relative text-sm">
-          <div className="flex items-center justify-between px-6">
-            <Link to="/">
-              <div className="flex items-center flex-shrink-0">
-                <img className="h-10 w-10 mr-2" src={logo} alt="" />
-                <span className="text-xl tracking-tight">IntervU</span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </nav> */}
-      {/* navbar ends */}
-
       <div className="max-w-3xl mx-auto mt-10 p-6 rounded-2xl shadow-md">
         <h2 className="text-3xl sm:text-5xl lg:text-6xl tracking-wide">
           Start Your{" "}
@@ -89,17 +76,6 @@ const StartMockInterview = () => {
             {loading ? "Generating..." : "Generate Questions"}
           </button>
         </form>
-
-        {questions.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold mb-3">Generated Questions:</h3>
-            <ul className="list-disc pl-5 space-y-2">
-              {questions.map((q, index) => (
-                <li key={index}>{q}</li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );
