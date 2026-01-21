@@ -32,9 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-# Ignore application.properties or any sensitive config
-src/main/resources/application.properties
-
 # Ignore environment variable files
 .env
 .env.local

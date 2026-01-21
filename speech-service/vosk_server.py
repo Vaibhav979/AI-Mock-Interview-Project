@@ -16,15 +16,23 @@ if not os.path.exists(model_path):
 
 model = Model(model_path)
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Speech-to-Text Service is running", "endpoint": "/transcribe"})
+
 @app.route("/transcribe", methods=["POST"])
 def speech_to_text():
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
     file = request.files["file"]
-    wf = wave.open(file, "rb")
+    try:
+        wf = wave.open(file, "rb")
+    except wave.Error:
+        return jsonify({"error": "Invalid WAV file"}), 400
 
     if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
+        wf.close()
         return jsonify({"error": "Audio file must be WAV format, mono PCM."}), 400
 
     rec = KaldiRecognizer(model, wf.getframerate())
@@ -40,7 +48,8 @@ def speech_to_text():
 
     final_result = json.loads(rec.FinalResult())
     text_result += final_result.get("text", "")
-    print({"Transcribed: ",text_result})
+    print(f"Transcribed: {text_result}")
+    wf.close()
 
     return jsonify({"text": text_result.strip()})
 

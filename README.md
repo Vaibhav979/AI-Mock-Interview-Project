@@ -124,6 +124,8 @@ ai-service (Gemini, ML models, future tone/facial analyzers)
 
 Backend → Spring Boot (Java)
 
+Security -> Spring Security(OAuth2)
+
 Speech Service → Flask + Vosk
 
 AI Integration → Gemini API
