@@ -40,3 +40,6 @@ build/
 .env.production.local
 
 node_modules/
+
+.history/
+.mvn/
